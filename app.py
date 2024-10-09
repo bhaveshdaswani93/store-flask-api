@@ -21,6 +21,17 @@ def get_stores():
 @app.post('/store')
 def create_store():
   req_body = request.get_json()
-  new_store = {'name': req_body['name'], items: [] }
+  new_store = {'name': req_body['name'], 'items': [] }
   stores.append(new_store)
   return new_store, 201
+
+@app.post('/store/<string:name>/item')
+def create_item_in_store(name):
+  req_body = request.get_json()
+  for store in stores:
+    if store['name'] == name:
+      new_item = {'name': req_body['name'], 'price': req_body['price']}
+      store['items'].append(new_item)
+      return new_item, 201
+  return "Store not found", 404
+  

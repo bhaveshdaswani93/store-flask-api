@@ -25,7 +25,7 @@ def get_stores():
 @app.post('/store')
 def create_store():
   req_body = request.get_json()
-  store_id = uuid.uuidv4().hex
+  store_id = uuid.uuid4().hex
   new_store = {**req_body, 'store_id': store_id }
   stores[store_id] = new_store
   return new_store, 201
@@ -53,4 +53,5 @@ def get_items_in_store(name):
     if store['name'] == name:
       return {'items': store['items']}
   return {'message': 'store not found'}, 404
+
   

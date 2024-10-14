@@ -1,3 +1,4 @@
+from email import message
 from flask import Flask, request
 from db import stores, items
 import uuid
@@ -26,6 +27,13 @@ def get_stores():
 @app.post('/store')
 def create_store():
   req_body = request.get_json()
+  if ('name' not in req_body):
+    abort(400, message="Name is required")
+
+  for store in stores.values():
+    if (store['name'] == req_body['name']):
+      abort(400, message='Store name already exists')
+
   store_id = uuid.uuid4().hex
   new_store = {**req_body, 'store_id': store_id }
   stores[store_id] = new_store
@@ -71,4 +79,12 @@ def get_item(item_id):
     return {'item': item}
   except KeyError:
     abort(404, message='item not found')
+
+@app.delete('/item/<string:item_id')
+def delete_item(item_id):
+  try:
+    del items[item_id]
+    return {'message': 'Item deleted successfully'}
+  except KeyError:
+    abort(404, 'Item not found')
   

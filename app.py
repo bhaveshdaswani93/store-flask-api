@@ -1,6 +1,7 @@
 from flask import Flask, request
 from db import stores, items
 import uuid
+from flask_smorest import abort
 
 print(__name__)
 
@@ -33,10 +34,19 @@ def create_store():
 @app.post('/item')
 def create_item():
   req_body = request.get_json()
+  if ('price' not in req_body
+    or 'store_id' not in req_body
+    or 'name' not in req_body):
+      abort(400, message='price, store_id, name is required')
+  
+  for item in items.values():
+    if (item['name'] == req_body['name'] and item['store_id'] == req_body['store_id']):
+      abort(400, message='Item already exists')
+  
   store_id = req_body['store_id']
 
   if store_id not in stores.keys():
-    return {'message': "store not found"}, 404
+    abort(404, message='Store not found')
 
   item_id = uuid.uuid4().hex
   new_item = {**req_body, 'item_id': item_id}
@@ -52,7 +62,7 @@ def get_store(store_id):
   try:
     return {'store': stores[store_id]}
   except KeyError:
-    return {'message': 'Store not found'}, 404
+    abort(404, message='Store not found')
 
 @app.get('/item/<string:item_id>')
 def get_item(item_id):
@@ -60,5 +70,5 @@ def get_item(item_id):
     item = items[item_id]
     return {'item': item}
   except KeyError:
-    return {'message': 'item not found'}, 404
+    abort(404, message='item not found')
   

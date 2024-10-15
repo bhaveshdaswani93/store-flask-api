@@ -87,4 +87,25 @@ def delete_item(item_id):
     return {'message': 'Item deleted successfully'}
   except KeyError:
     abort(404, 'Item not found')
+    
+@app.put('/item/<string:item_id>')
+def update_item(item_id):
+  req_body = request.get_json()
+  if ('name' not in req_body or 'price' not in req_body):
+    abort(400, message='price, name is required')
+  try:
+    item = items[item_id]
+    item |= req_body
+    
+    return {'item': item}
+  except KeyError:
+    abort(404, message='item not found')
+    
+@app.delete('/store/<string:store_id')
+def delete_store(store_id):
+  try:
+    del stores[store_id]
+    return {'message':'store deleted successfully'}
+    except KeyError:
+      abort(404, message='Store not found')
   

@@ -80,7 +80,7 @@ def get_item(item_id):
   except KeyError:
     abort(404, message='item not found')
 
-@app.delete('/item/<string:item_id')
+@app.delete('/item/<string:item_id>')
 def delete_item(item_id):
   try:
     del items[item_id]
@@ -101,11 +101,11 @@ def update_item(item_id):
   except KeyError:
     abort(404, message='item not found')
     
-@app.delete('/store/<string:store_id')
+@app.delete('/store/<string:store_id>')
 def delete_store(store_id):
   try:
     del stores[store_id]
     return {'message':'store deleted successfully'}
-    except KeyError:
-      abort(404, message='Store not found')
+  except KeyError:
+    abort(404, message='Store not found')
   

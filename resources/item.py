@@ -1,7 +1,8 @@
 import uuid
 from flask import request
 from flask.views import MethodView
-from flask_smorest import Blueprint
+from flask_smorest import Blueprint, abort
+from db import items
 
 blp = Blueprint('Items', __name__, description="Item Operation")
 
@@ -41,20 +42,20 @@ class Item(MethodView):
     def post(self):
       req_body = request.get_json()
       if ('price' not in req_body
-    or 'store_id' not in req_body
-    or 'name' not in req_body):
-      abort(400, message='price, store_id, name is required')
+        or 'store_id' not in req_body
+        or 'name' not in req_body):
+          abort(400, message='price, store_id, name is required')
   
-  for item in items.values():
-    if (item['name'] == req_body['name'] and item['store_id'] == req_body['store_id']):
-      abort(400, message='Item already exists')
+      for item in items.values():
+        if (item['name'] == req_body['name'] and item['store_id'] == req_body['store_id']):
+          abort(400, message='Item already exists')
   
-  store_id = req_body['store_id']
+      store_id = req_body['store_id']
 
-  if store_id not in stores.keys():
-    abort(404, message='Store not found')
+      if store_id not in stores.keys():
+        abort(404, message='Store not found')
 
-  item_id = uuid.uuid4().hex
-  new_item = {**req_body, 'item_id': item_id}
-  items[item_id] = new_item
-  return new_item, 201
+      item_id = uuid.uuid4().hex
+      new_item = {**req_body, 'item_id': item_id}
+      items[item_id] = new_item
+      return new_item, 201

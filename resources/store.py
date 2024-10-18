@@ -1,3 +1,4 @@
+from email import message
 import uuid
 from flask import request
 from flask.views import MethodView
@@ -6,7 +7,7 @@ from db import stores
 
 blp = Blueprint('Stores', __name__, description='Operations on stores')
 
-@blp.route('/store/<sting:store_id>')
+@blp.route('/store/<string:store_id>')
 class Store(MethodView):
   def get(self, store_id):
     try:
@@ -20,6 +21,15 @@ class Store(MethodView):
       return {'message':'store deleted successfully'}
     except KeyError:
      abort(404, message='Store not found')
+  
+  def put(self, store_id):
+    try:
+      req_body = request.get_json()
+      store = stores[store_id]
+      store |= req_body
+      return {'store': store}
+    except KeyError:
+      abort(404, message="Store not found")
 
 @blp.route('/store')
 class StoreList(MethodView):

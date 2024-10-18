@@ -1,4 +1,4 @@
-from marshmellow import Schema, fields
+from marshmallow import Schema, fields
 
 class ItemSchema(Schema):
   id = fields.Str(dump_only=True)
@@ -9,3 +9,8 @@ class ItemSchema(Schema):
 class ItemUpdateSchema(Schema):
   name = fields.Str()
   price = fields.float()
+
+class StoreSchema(Schema):
+  id = fields.Str(dump_only=True)
+  name = fields.Str(required=True)
+  

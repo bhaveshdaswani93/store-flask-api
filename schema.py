@@ -1,0 +1,1 @@
+from marshmellow import Schema, fields

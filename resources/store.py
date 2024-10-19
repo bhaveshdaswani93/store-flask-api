@@ -4,6 +4,7 @@ from flask import request
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from db import stores
+from schemas import StoreSchema
 
 blp = Blueprint('Stores', __name__, description='Operations on stores')
 
@@ -38,10 +39,9 @@ class StoreList(MethodView):
       'stores': list(stores.values())
     }
   
-  def post(self):
-    req_body = request.get_json()
-    if ('name' not in req_body):
-      abort(400, message="Name is required")
+  @blp.arguments(StoreSchema)
+  def post(self, req_body):
+    #req_body = request.get_json()
 
     for store in stores.values():
       if (store['name'] == req_body['name']):

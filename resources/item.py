@@ -36,8 +36,9 @@ class Item(MethodView):
     except KeyError:
       abort(404, message='item not found')
       
+  @blp.route('/item')
   class ItemList(MethodView):
-    @blp.response(ItemSchema(many=True))
+    @blp.response(200, ItemSchema(many=True))
     def get(self):
       return items.values()
     
@@ -56,6 +57,6 @@ class Item(MethodView):
         abort(404, message='Store not found')
 
       item_id = uuid.uuid4().hex
-      new_item = {**req_body, 'item_id': item_id}
+      new_item = {**req_body, 'item_id': item_id, "id": item_id}
       items[item_id] = new_item
       return new_item, 201

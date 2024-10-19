@@ -50,8 +50,8 @@ class StoreList(MethodView):
         abort(400, message='Store name already exists')
 
     store_id = uuid.uuid4().hex
-    new_store = {**req_body, 'store_id': store_id }
+    new_store = {**req_body, 'id': store_id, 'store_id': store_id }
     stores[store_id] = new_store
-    return new_store, 201
+    return new_store
 
 

@@ -3,7 +3,7 @@ from flask import request
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from schema import ItemSchema, ItemUpdateSchema
-from db import items, stores
+# from db import items, stores
 
 blp = Blueprint('Items', __name__, description="Item Operation")
 

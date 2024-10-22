@@ -19,7 +19,7 @@ class ItemSchema(PlainItemSchema):
   store = fields.Nested(PlainStoreSchema(), dump_only=True)
   
 class StoreSchema(PlainStoreSchema):
-  items: fields.list(fields.Nested(PlainItemSchema()), dump_only=True)
+  items: fields.List(fields.Nested(PlainItemSchema()), dump_only=True)
 
 # class StoreSchema(Schema):
 #   id = fields.Str(dump_only=True)

@@ -16,6 +16,10 @@ class ItemUpdateSchema(Schema):
 
 class ItemSchema(PlainItemSchema):
   store_id = fields.Int(required=True, load_only=True)
+  store = fields.Nested(PlainStoreSchema(), dump_only=True)
+  
+class StoreSchema(PlainStoreSchema):
+  items: fields.list(fields.Nested(PlainItemSchema()), dump_only=True)
 
 # class StoreSchema(Schema):
 #   id = fields.Str(dump_only=True)

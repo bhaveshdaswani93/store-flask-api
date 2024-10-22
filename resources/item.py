@@ -1,9 +1,12 @@
+from email import message
 import uuid
 from flask import request
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
+from models.item import ItemModel
 from schema import ItemSchema, ItemUpdateSchema
-# from db import items, stores
+from db import db
+from sqlalchemy.exc import SQLAlchemyError
 
 blp = Blueprint('Items', __name__, description="Item Operation")
 
@@ -45,18 +48,13 @@ class Item(MethodView):
     @blp.arguments(ItemSchema)
     @blp.response(201, ItemSchema)
     def post(self, req_body):
-     # req_body = request.get_json()
-  
-      for item in items.values():
-        if (item['name'] == req_body['name'] and item['store_id'] == req_body['store_id']):
-          abort(400, message='Item already exists')
-      
-      store_id = req_body['store_id']
+      item = ItemModel(**req_body)
 
-      if store_id not in stores.keys():
-        abort(404, message='Store not found')
+      try:
+        db.session.add(item)
+        db.session.commit()
+      except SQLAlchemyError:
+        abort(500, message="an error occurred while inserting the item")
 
-      item_id = uuid.uuid4().hex
-      new_item = {**req_body, 'item_id': item_id, "id": item_id}
-      items[item_id] = new_item
-      return new_item, 201
+      return item
+    

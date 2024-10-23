@@ -1,2 +1,2 @@
-from models.store import StoreModal
+from models.store import StoreModel
 from models.item import ItemModel

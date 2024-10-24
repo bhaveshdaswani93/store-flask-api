@@ -6,7 +6,7 @@ from flask_smorest import Blueprint, abort
 from models.store import StoreModel
 from db import db
 from schema import StoreSchema
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
 blp = Blueprint('Stores', __name__, description='Operations on stores')
 
@@ -51,6 +51,8 @@ class StoreList(MethodView):
     try:
       db.session.add(store)
       db.session.commit()
+    except IntegrityError:
+      abort(400, message="Store with that name already exists")
     except SQLAlchemyError:
       abort(500, message="Something Went wrong while saving store info")
 

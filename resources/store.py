@@ -5,36 +5,36 @@ from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from models.store import StoreModel
 from db import db
-from schema import StoreSchema
+from schema import StoreSchema, StoreUpdateSchema
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
 blp = Blueprint('Stores', __name__, description='Operations on stores')
 
-@blp.route('/store/<string:store_id>')
+@blp.route('/store/<int:store_id>')
 class Store(MethodView):
   @blp.response(200, StoreSchema)
   def get(self, store_id):
-    try:
-     return stores[store_id]
-    except KeyError:
-     abort(404, message='Store not found')
+    store = StoreModel.query.get_or_404(store_id)
+    return store
   
   def delete(self, store_id):
-    try:
-      del stores[store_id]
-      return {'message':'store deleted successfully'}
-    except KeyError:
-     abort(404, message='Store not found')
+    store = StoreModel.query.get_or_404(store_id)
+    NotImplementedError("Implementation pending for Delete store")
   
+  @blp.arguments(StoreUpdateSchema)
   @blp.response(200, StoreSchema)
-  def put(self, store_id):
-    try:
-      req_body = request.get_json()
-      store = stores[store_id]
-      store |= req_body
-      return store
-    except KeyError:
-      abort(404, message="Store not found")
+  def put(self, store_data, store_id):
+    store = StoreModel.query.get_or_404(store_id)
+    
+    if store:
+      store['name'] = store_data['name']
+    else:
+      store = StoreModel(id=store_id, **store_data)
+
+    db.session.add(store)
+    db.session.commit()
+
+    return store
 
 @blp.route('/store')
 class StoreList(MethodView):

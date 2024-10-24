@@ -19,19 +19,22 @@ class Item(MethodView):
 
   def delete(self, item_id):
     item = ItemModel.query.get_or_404(item_id)
-    raise NotImplementedError('Implenting of delete item is pending')
+    raise NotImplementedError('Implementing of delete item is pending')
     
   @blp.arguments(ItemUpdateSchema)
   @blp.response(200, ItemSchema)
   def put(self, req_body, item_id):
-    #req_body = request.get_json()
-    try:
-      item = items[item_id]
-      item |= req_body
-    
-      return item
-    except KeyError:
-      abort(404, message='item not found')
+    item = ItemModel.query.get(item_id)
+    if item:
+      item.name = req_body['name']
+      item.price = req_body['price']
+    else:
+      item = ItemModel(id=item_id, **req_body)
+
+    db.session.add(item)
+    db.session.commit()
+
+    return item
       
   @blp.route('/item')
   class ItemList(MethodView):

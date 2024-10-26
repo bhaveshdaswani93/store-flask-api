@@ -28,10 +28,11 @@ class Store(MethodView):
   @blp.arguments(StoreUpdateSchema)
   @blp.response(200, StoreSchema)
   def put(self, store_data, store_id):
+    print(store_data)
     store = StoreModel.query.get(store_id)
     
     if store:
-      store['name'] = store_data['name']
+      store.name = store_data['name']
     else:
       store = StoreModel(id=store_id, **store_data)
 

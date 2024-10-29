@@ -12,6 +12,7 @@ class PlainStoreSchema(Schema):
 
 class PlainTagSchema(Schema):
   id = fields.Int(dump_only=True)
+  name = fields.Str(required=True)
 
 class ItemUpdateSchema(Schema):
   name = fields.Str()

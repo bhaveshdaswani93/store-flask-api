@@ -10,10 +10,30 @@ blp = Blueprint("Tags", "tags", description="Blueprint for tags")
 
 @blp.route('/store/<int:store_id>/tag')
 class TagInStore(MethodView):
+  @blp.response(200, TagSchema(many=True))
   def get(self, store_id):
-    pass
+    store = StoreModel.query.get_or_404(store_id)
+    
+    return store.tags.all()
 
   @blp.arguments(TagSchema)
   @blp.response(201, TagSchema)
   def post(self, tag_data, store_id):
-    pass
+   if TagModel.query.filter(TagModel.store_id == store_id, TagModel.name == tag_data['name']).first():
+     abort(400, message='Tag with this name already exists')
+    tag = TagModel(**tag_data, store_id=store_id)
+    
+    try:
+      db.session.add(tag)
+      db.session.commit()
+    except SQLAlchemyError as e:
+      abort(500, message=str(e))
+    
+    return tag
+    
+@blp.route('/tag/<string:tag_id>')
+class Tag(MethodView):
+  @blp.response(200, TagSchema)
+  def get(self, tag_id):
+    tag = TagModel.get_or_404(tag_id)
+    return tag

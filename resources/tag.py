@@ -38,6 +38,19 @@ class Tag(MethodView):
   def get(self, tag_id):
     tag = TagModel.query.get_or_404(tag_id)
     return tag
+  
+  @blp.response(202, description='Deletes a tag if not item is attached to it', example={'message': 'Tag deleted'})
+  @blp.alt_response(404, description='Tag not found')
+  @blp.response(400, description='when tag is assigned item')
+  def delete(self, tag_id):
+    tag = TagModel.query.get_or_404(tag_id)
+    
+    if not tag.items:
+      db.session.delete(tag)
+      db.session.commit()
+      return {'message': 'tag deleted successfully'}
+    
+    abort(400, message='tag is associated with item, please disassociate them first, then try again')
 
 @blp.route('/item/<string:item_id>/tag/<string:tag_id>')
 class LinkTagToItem(MethodView):

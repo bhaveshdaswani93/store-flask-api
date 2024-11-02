@@ -1,7 +1,7 @@
 import os
 from flask import Flask
 from flask_smorest import Api
-from flask_jwt_extended import JwtManager
+from flask_jwt_extended import JWTManager
 
 from resources.item import blp as ItemBlueprint
 from resources.store import blp as StoreBlueprint
@@ -38,9 +38,9 @@ def create_app(db_url=None):
   db.init_app(app)
   api = Api(app)
   
-  app.config['JWT_SECRET_KEY'] = 'bce95273-873b-4026-b5c7-5844fd54da22'
+  app.config['JWT_SECRET_KEY'] = '243298653354856329497319100674191169490'
   
-  jwt = JwtManager(app)
+  jwt = JWTManager(app)
 
   with app.app_context():
     db.create_all()

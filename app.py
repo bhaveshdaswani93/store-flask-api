@@ -1,6 +1,8 @@
 import os
 from flask import Flask
 from flask_smorest import Api
+from flask_jwt_extended import JwtManager
+
 from resources.item import blp as ItemBlueprint
 from resources.store import blp as StoreBlueprint
 from resources.tag import blp as TagBluePrint
@@ -35,6 +37,10 @@ def create_app(db_url=None):
   app.config['SQLALCHEMY_TRACK_MODIFICATION'] = False
   db.init_app(app)
   api = Api(app)
+  
+  app.config['JWT_SECRET_KEY'] = 'bce95273-873b-4026-b5c7-5844fd54da22'
+  
+  jwt = JwtManager(app)
 
   with app.app_context():
     db.create_all()

@@ -38,15 +38,15 @@ class UserLogin(MethodView):
       pass
       
     
-  @blp.route('/user/<int:user_id')
+  @blp.route('/user/<int:user_id>')
   class User(MethodView):
     @blp.response(200, UserSchema)
-    get(self, user_id):
+    def get(self, user_id):
       user = UserModel.query.get_or_404(user_id)
       
       return user
       
-    delete(self, user_id):
+    def delete(self, user_id):
       user = UserModel.query.get_or_404(user_id)
       
       db.session.delete(user)
